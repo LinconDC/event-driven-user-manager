@@ -1,0 +1,33 @@
+spring:
+  cloud:
+    stream:
+      bindings:
+        output:
+          destination: user-events-v1
+          contentType: application/json
+        input:
+          destination: user-events-v1
+          group: user-manager-group
+          contentType: application/json
+      kafka:
+        binder:
+          brokers: localhost:9092
+          autoCreateTopics: false
+          default:
+            producer:
+              acks: all
+              retries: 3
+              key-serializer: org.apache.kafka.common.serialization.StringSerializer
+              value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+            consumer:
+              key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+              value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+              auto-offset-reset: earliest
+
+  data:
+    mongodb:
+      uri: mongodb+srv://${DB_USER:admin}:${DB_PASSWORD}@eventscluster.ucrgvqt.mongodb.net/${DB_NAME:events}?retryWrites=true&w=majority&appName=EventsCluster
+      auto-index-creation: true
+
+  application:
+    name: events
